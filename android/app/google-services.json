@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "588240235676",
+    "project_id": "newstore-60688",
+    "storage_bucket": "newstore-60688.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:588240235676:android:7e0b3a0db994a7cdc25159",
+        "android_client_info": {
+          "package_name": "com.example.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "588240235676-5u351r7bfmicdbpi98u0jfdrnjnscl1i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSR4dSsVAenWCxnPB1JO4xttkGGB8ND10"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "588240235676-5u351r7bfmicdbpi98u0jfdrnjnscl1i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "588240235676-4qabtcolt4r323ihmsuf39pfrn6jl4n2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterWithFirebase"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
