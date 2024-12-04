@@ -73,15 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  // Function to clear search query and reset results
-  // void _clearSearch() {
-  //   setState(() {
-  //     _searchController.clear(); // Clear the search field
-  //     _searchQuery = ''; // Reset search query
-  //     _isSearchActive = false; // Reset search status
-  //   });
-  // }
-
 
   // Function to perform the search query and show AlertDialog
  void _showSearchResults(BuildContext context) async {
@@ -136,29 +127,6 @@ class _HomeScreenState extends State<HomeScreen> {
               children: querySnapshot.docs.map((doc) {
                 final plant = Plant.fromFirestore(doc);
                 return 
-                // Center(
-                //   child: Container(
-                //     color: Colors.amber,
-                //     width: 300,
-                //     height: 300,
-                //     child: ListView(
-                //       children: [GestureDetector(
-                //          onTap: () {
-                //         // When tapped, show the details of the plant
-                //         Navigator.push(
-                //           context,
-                //           MaterialPageRoute(
-                //             builder: (context) => PlantDetailsScreen(plant: plant),
-                //           ),
-                //         );
-                //       },
-                //         child:Row(children: [
-                //         Image.network(plant.imageUrl,width: 50,height: 50,),
-                //         Text('Price: ₹${plant.price}'),
-                //       ],),)],
-                //     ),
-                //   ),
-                // );
                 ListTile(
                    leading: Image.network(
                     plant.imageUrl,  // Display the plant's image
@@ -246,10 +214,36 @@ class _HomeScreenState extends State<HomeScreen> {
       SnackBar(content: Text('Added to Cart!')),
     );
   }
-
+Set<String> favoritePlants = {}; 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+            drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color(0xFF00A86B),
+              ),
+              child: Text(
+                'More Services',
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
+            ),
+            ListTile(
+              title: Text('About App'),
+              onTap: () {
+                // Handle item tap
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AboutScreen()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         backgroundColor:Color(0xFF00A86B) ,
         title: Text('Blooming'),
@@ -285,6 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (!snapshot.hasData) {
         return Center(child: CircularProgressIndicator());
       }
+       
       return GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2, // Two columns
@@ -295,6 +290,8 @@ class _HomeScreenState extends State<HomeScreen> {
         itemCount: snapshot.data!.docs.length,
         itemBuilder: (context, index) {
           final plant = snapshot.data!.docs[index];
+           bool isFavorite = favoritePlants.contains(plant.id);
+
           return GestureDetector(
             onTap: () {
               Navigator.push(
@@ -360,12 +357,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       SizedBox(width: 55,),
                       IconButton(
                         icon: Icon(
-                          Icons.favorite_border,
-                          color: Colors.red,
+                          isFavorite ? Icons.favorite : Icons.favorite_border, // Change icon based on favorite status
+                          color: isFavorite ? Colors.red : Colors.black,
                         ),
                         onPressed: () {
                           // Add to favorites logic
-                             addToFavorites(plant.id);
+                           setState(() {
+                                if (isFavorite) {
+                                  favoritePlants.remove(plant.id); // Remove from favorites
+                                } else {
+                                  favoritePlants.add(plant.id);
+                                   addToFavorites(plant.id); // Add to favorites
+                                }
+                              }); // Trigger UI update
+                          // addToFavorites(plant.id);
                         },
                       ),
                     ],
@@ -723,6 +728,152 @@ class _PlantDetailsScreenState extends State<PlantDetailsScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class AboutScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.green,
+        title: Text('About the App', style: TextStyle(fontWeight: FontWeight.bold)),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+      image: DecorationImage(
+      image:NetworkImage('https://wallpapers.com/images/hd/ruscus-leaf-in-dark-sc4yn2cfo2ufrcs6.jpg')
+      ,fit: BoxFit.fill)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView(
+            children: <Widget>[
+              // About Title Container
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  'About This App',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+        
+              // Description Text
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 1,
+                      blurRadius: 6,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  'This app offers a variety of services to help users manage their plant collection. '
+                  'From purchasing plants to tracking your plant care, we provide tools to ensure '
+                  'your plants thrive. Here are some of the features we offer:',
+                  style: TextStyle(fontSize: 16, color: Colors.black87),
+                ),
+              ),
+              SizedBox(height: 20),
+        
+              // Services Header
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  'Services We Offer:',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+        
+              // Services List
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 1,
+                      blurRadius: 6,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  '1. Plant Shopping\n'
+                  '2. Care Tips and Reminders\n'
+                  '3. Plant Growth Tracking\n'
+                  '4. Community Sharing and Advice\n',
+                  style: TextStyle(fontSize: 16, color: Colors.black87),
+                ),
+              ),
+              SizedBox(height: 20),
+        
+              // Contact Text
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      spreadRadius: 1,
+                      blurRadius: 6,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  'For more information or assistance, feel free to contact our support team.',
+                  style: TextStyle(fontSize: 16, color: Colors.black87),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -10,8 +10,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
 import 'homepage2.dart';
-// import 'test.dart';
-
 
  Future<void> main () async {
 
